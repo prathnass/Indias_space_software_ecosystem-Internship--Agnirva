@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>India's Space Software Ecosystem — Start Here</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F5; --paper-2:#E3E8EF; --ink:#1B2433; --ink-soft:#4B5568;
+    --line:#C7CFDC; --portal:#B4651F; --api:#1F7A75; --tool:#3E4396;
+    --portal-bg:#F4E6D7; --api-bg:#DCEEEC; --tool-bg:#E3E4F3;
+    --accent:#B4651F;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper:#171A21; --paper-2:#1E222B; --ink:#E7E9EE; --ink-soft:#A4ABBA;
+      --line:#333948; --portal-bg:#3A2A18; --api-bg:#163331; --tool-bg:#232542;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#171A21; --paper-2:#1E222B; --ink:#E7E9EE; --ink-soft:#A4ABBA;
+    --line:#333948; --portal-bg:#3A2A18; --api-bg:#163331; --tool-bg:#232542;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: calc(72px + env(safe-area-inset-top,0px));}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif; font-size:16px; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Spectral',serif; font-weight:600; margin:0; color:var(--ink);}
+  a{color:var(--accent);}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+
+  /* top bar */
+  header.top{
+    position:sticky; top:0; z-index:20; background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1040px; margin:0 auto;}
+  .brand{font-family:'Spectral',serif; font-weight:600; font-size:18px; letter-spacing:.2px;}
+  .brand span{color:var(--accent);}
+  nav.toplinks{display:flex; gap:22px; font-size:14px;}
+  nav.toplinks a{color:var(--ink-soft); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:3px;}
+  nav.toplinks a:hover{color:var(--ink); border-color:var(--accent);}
+  @media (max-width:640px){ nav.toplinks{display:none;} }
+
+  /* hero */
+  .hero{padding:64px 0 48px; border-bottom:1px solid var(--line);}
+  .hero .kicker{color:var(--ink-soft); font-size:14px; margin-bottom:14px;}
+  .hero h1{font-size:clamp(30px,5vw,46px); line-height:1.15; max-width:16ch;}
+  .hero p.lead{max-width:62ch; color:var(--ink-soft); font-size:18px; margin-top:18px;}
+  .hero .claim{
+    margin-top:28px; padding:16px 20px; border-left:3px solid var(--accent);
+    background:var(--paper-2); max-width:62ch; font-size:15px; color:var(--ink);
+  }
+
+  section{padding:56px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:28px; max-width:70ch;}
+  .section-head .num{color:var(--ink-soft); font-size:14px; margin-bottom:6px;}
+  .section-head h2{font-size:28px;}
+  .section-head p{color:var(--ink-soft); margin-top:10px; font-size:15px;}
+
+  /* MAP grid */
+  .map-grid{display:grid; grid-template-columns:140px repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); overflow-x:auto;}
+  .map-cell{background:var(--paper); padding:14px 16px; font-size:14px;}
+  .map-cell.head{background:var(--paper-2); font-weight:600; font-size:13px; color:var(--ink-soft);}
+  .map-cell.rowlabel{background:var(--paper-2); font-weight:600;}
+  .tag{display:inline-block; font-size:12px; font-weight:600; padding:3px 9px; border-radius:3px; margin-bottom:6px;}
+  .tag.portal{background:var(--portal-bg); color:var(--portal);}
+  .tag.api{background:var(--api-bg); color:var(--api);}
+  .tag.tool{background:var(--tool-bg); color:var(--tool);}
+  .map-cell p{margin:4px 0 0; color:var(--ink-soft); font-size:13px;}
+  .legend{display:flex; gap:20px; margin-top:16px; font-size:13px; color:var(--ink-soft); flex-wrap:wrap;}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+
+  /* pathways */
+  .path-tabs{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
+  .path-tab{
+    padding:9px 16px; border:1px solid var(--line); background:var(--paper);
+    font-size:14px; cursor:pointer; color:var(--ink-soft); font-family:inherit;
+  }
+  .path-tab.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .path-panel{display:none;}
+  .path-panel.active{display:block;}
+  .goal-line{font-size:17px; margin-bottom:18px;}
+  .goal-line b{font-weight:600;}
+  ol.steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  ol.steps li{
+    counter-increment:step; display:grid; grid-template-columns:34px 1fr;
+    gap:14px; padding:14px 0; border-top:1px solid var(--line);
+  }
+  ol.steps li:first-child{border-top:none;}
+  ol.steps li::before{
+    content:counter(step); font-family:'Spectral',serif; font-weight:600;
+    color:var(--accent); font-size:18px;
+  }
+  ol.steps li .stxt b{font-weight:600;}
+  ol.steps li .stxt .note{display:block; color:var(--ink-soft); font-size:13px; margin-top:4px;}
+
+  /* glossary */
+  .gsearch{
+    width:100%; padding:11px 14px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); font-family:inherit; font-size:15px; margin-bottom:18px;
+  }
+  dl.gloss{margin:0; border-top:1px solid var(--line);}
+  dl.gloss div{border-bottom:1px solid var(--line); padding:14px 0; display:grid; grid-template-columns:160px 1fr; gap:16px;}
+  dl.gloss dt{font-weight:600; font-family:'Spectral',serif; font-size:16px;}
+  dl.gloss dd{margin:0; color:var(--ink-soft); font-size:14px;}
+  @media (max-width:640px){ dl.gloss div{grid-template-columns:1fr;} }
+  dl.gloss div.hide{display:none;}
+
+  /* sources */
+  .src-list{display:grid; gap:14px;}
+  .src{border:1px solid var(--line); padding:16px 18px; display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
+  .src .name{font-family:'Spectral',serif; font-weight:600; font-size:16px;}
+  .src .meta{color:var(--ink-soft); font-size:13px;}
+  .src a{font-size:13px; white-space:nowrap;}
+  .citerule{margin-top:22px; padding:16px 20px; background:var(--paper-2); font-size:14px; color:var(--ink-soft); max-width:70ch;}
+
+  footer{padding:36px 0 48px; color:var(--ink-soft); font-size:13px;}
+  footer .wrap{border-top:1px solid var(--line); padding-top:22px;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <div class="brand">India's <span>Space Software</span> Ecosystem</div>
+    <nav class="toplinks">
+      <a href="#map">Portal Map</a>
+      <a href="#pathways">Pathways</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#sources">Sources</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">A beginner's starting map for Indian space-data platforms</div>
+    <h1>Stuck trying to find satellite data? Start here.</h1>
+    <p class="lead">Most students hit the same wall with MOSDAC, NASA Earthdata, or Copernicus — not because they don't understand space, but because no one explains the difference between a portal, an API, and a tool. This page does.</p>
+    <div class="claim">Built directly from the public documentation of MOSDAC (ISRO), NASA Earthdata, and the Copernicus Data Space Ecosystem — every claim on this page is traceable to a named source.</div>
+  </div>
+</div>
+
+<section id="map">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="num">01</div>
+      <h2>The Data Portal Map</h2>
+      <p>Each platform below contains all three kinds of access — a portal to browse, an API to pull data programmatically, and tools to process it. Knowing which one you're looking at changes what skills you need.</p>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot" style="background:var(--portal)"></span>Portal — browse &amp; download</span>
+      <span><span class="dot" style="background:var(--api)"></span>API — programmatic access</span>
+      <span><span class="dot" style="background:var(--tool)"></span>Tool — process once downloaded</span>
+    </div>
+
+    <div class="map-grid" style="margin-top:16px;">
+      <div class="map-cell head">Platform</div>
+      <div class="map-cell head">Portal</div>
+      <div class="map-cell head">API</div>
+      <div class="map-cell head">Tool</div>
+
+      <div class="map-cell rowlabel">MOSDAC<br><span style="font-weight:400;color:var(--ink-soft);font-size:12px;">ISRO, India</span></div>
+      <div class="map-cell"><span class="tag portal">Browse</span><p>Web portal for ocean, atmosphere &amp; land products</p></div>
+      <div class="map-cell"><span class="tag api">Limited</span><p>Mostly download-based; programmatic access is minimal</p></div>
+      <div class="map-cell"><span class="tag tool">Varies</span><p>Products need external GIS software to open</p></div>
+
+      <div class="map-cell rowlabel">NASA Earthdata<br><span style="font-weight:400;color:var(--ink-soft);font-size:12px;">NASA, USA</span></div>
+      <div class="map-cell"><span class="tag portal">Browse</span><p>Search &amp; discovery portal, task-based tutorials</p></div>
+      <div class="map-cell"><span class="tag api">Full</span><p>Earthdata Search API, well documented</p></div>
+      <div class="map-cell"><span class="tag tool">Guided</span><p>"Data recipes" walk you from raw file to result</p></div>
+
+      <div class="map-cell rowlabel">Copernicus<br><span style="font-weight:400;color:var(--ink-soft);font-size:12px;">ESA / EU</span></div>
+      <div class="map-cell"><span class="tag portal">Browse</span><p>Integrated visual data browser</p></div>
+      <div class="map-cell"><span class="tag api">Full</span><p>Strong API, but assumes you know authentication</p></div>
+      <div class="map-cell"><span class="tag tool">Varies</span><p>Processing tools exist but need setup</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pathways">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="num">02</div>
+      <h2>Task-Based Pathways</h2>
+      <p>Pick the goal closest to yours. Each pathway gives you one concrete next step — not a list of every option.</p>
+    </div>
+
+    <div class="path-tabs">
+      <button class="path-tab active" data-path="rain">Find rainfall data</button>
+      <button class="path-tab" data-path="land">Find land-use data</button>
+    </div>
+
+    <div class="path-panel active" id="path-rain">
+      <div class="goal-line">Goal: <b>Find satellite rainfall data for your region</b></div>
+      <ol class="steps">
+        <li><div class="stxt"><b>Go to the MOSDAC portal</b> at mosdac.gov.in<span class="note">This is the Portal layer — you're browsing, not calling an API yet.</span></div></li>
+        <li><div class="stxt"><b>Navigate to "Atmospheric Products"</b><span class="note">This is where rainfall and precipitation datasets are grouped.</span></div></li>
+        <li><div class="stxt"><b>Select a rainfall/precipitation dataset and your date range</b><span class="note">Check the Glossary below for what "date range" options actually mean here.</span></div></li>
+        <li><div class="stxt"><b>Download in GeoTIFF or NetCDF format</b><span class="note">Both are file formats for geographic data — see Glossary for which one fits your analysis tool.</span></div></li>
+      </ol>
+    </div>
+
+    <div class="path-panel" id="path-land">
+      <div class="goal-line">Goal: <b>Find land-use or land-cover data</b></div>
+      <ol class="steps">
+        <li><div class="stxt"><b>Go to the Copernicus Data Space browser</b> at dataspace.copernicus.eu<span class="note">This is the Portal layer of Copernicus — visual browsing, no API call needed yet.</span></div></li>
+        <li><div class="stxt"><b>Search by area of interest</b><span class="note">Draw or type your region of India directly on the map view.</span></div></li>
+        <li><div class="stxt"><b>Filter by Sentinel-2 Level-2A product</b><span class="note">This product type is already corrected for atmospheric effects — easiest for beginners.</span></div></li>
+        <li><div class="stxt"><b>Download the scene directly from the browser</b><span class="note">No authentication token needed for this step — that's only required if you move to the API later.</span></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="glossary">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="num">03</div>
+      <h2>Glossary</h2>
+      <p>The same term means the same thing everywhere on this page. Search or scan below.</p>
+    </div>
+    <input class="gsearch" id="gsearch" placeholder="Search a term, e.g. 'API' or 'GeoTIFF'…">
+    <dl class="gloss" id="glossList">
+      <div><dt>Portal</dt><dd>A website where you browse and download data by clicking through menus — no coding needed.</dd></div>
+      <div><dt>API</dt><dd>Application Programming Interface. A way for a program (not a human clicking buttons) to request data directly from a platform.</dd></div>
+      <div><dt>Tool</dt><dd>Software used after downloading data, to open, view, or process it — separate from the portal or API you got it from.</dd></div>
+      <div><dt>Endpoint</dt><dd>A specific web address an API responds to — think of it as one "counter" at a service desk that handles one type of request.</dd></div>
+      <div><dt>Authentication</dt><dd>Proving who you are to an API, usually with a token, before it will respond to your request.</dd></div>
+      <div><dt>Token</dt><dd>A piece of text that acts like a temporary password, proving to an API that you're allowed to access it.</dd></div>
+      <div><dt>GeoTIFF</dt><dd>An image file format that also stores exact geographic location — common for satellite imagery.</dd></div>
+      <div><dt>NetCDF</dt><dd>A file format built for large, multi-dimensional scientific data, such as data that varies by time and location together.</dd></div>
+      <div><dt>Level-2A product</dt><dd>Satellite data that has already been corrected for atmospheric interference — more ready-to-use than raw (Level-1) data.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="num">04</div>
+      <h2>Sources</h2>
+      <p>Every classification and step on this page traces back to one of these three platforms' own public documentation.</p>
+    </div>
+    <div class="src-list">
+      <div class="src"><div><div class="name">MOSDAC</div><div class="meta">Indian Space Research Organisation (ISRO)</div></div><a href="https://www.mosdac.gov.in" target="_blank" rel="noopener">mosdac.gov.in ↗</a></div>
+      <div class="src"><div><div class="name">NASA Earthdata Tools</div><div class="meta">National Aeronautics and Space Administration</div></div><a href="https://www.earthdata.nasa.gov/data/tools" target="_blank" rel="noopener">earthdata.nasa.gov ↗</a></div>
+      <div class="src"><div><div class="name">Copernicus Data Space Ecosystem</div><div class="meta">European Space Agency / European Union</div></div><a href="https://dataspace.copernicus.eu" target="_blank" rel="noopener">dataspace.copernicus.eu ↗</a></div>
+    </div>
+    <div class="citerule">This page does not host, process, or provide live access to satellite data. It explains how to reach the three platforms above and does not replace or compete with their official documentation.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Built for the Agnirva Software Internship Program (Onboarded by AICTE under NEAT 5.0) — India's Space Software Ecosystem, Version 1.
+  </div>
+</footer>
+
+<script>
+  // pathway tabs
+  document.querySelectorAll('.path-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.path-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.path-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('path-'+btn.dataset.path).classList.add('active');
+    });
+  });
+  // glossary search
+  const gsearch = document.getElementById('gsearch');
+  gsearch.addEventListener('input', ()=>{
+    const q = gsearch.value.trim().toLowerCase();
+    document.querySelectorAll('#glossList > div').forEach(row=>{
+      const text = row.textContent.toLowerCase();
+      row.classList.toggle('hide', q.length>0 && !text.includes(q));
+    });
+  });
+</script>
+
+</body>
+</html>
